@@ -1,0 +1,56 @@
+/* Query 1 */
+Who are the top 50 highest spending customers, who are they, and what country are they from ? 
+
+SELECT 		invoice.customerid AS CustomerID,
+			MAX(total) AS GrandTotal,
+        		customer.firstname AS FirstName,
+    			customer.lastname AS LastName,
+        		invoice.billingcountry AS Country
+FROM 		invoice
+JOIN 		customer 
+ON 			invoice.customerid = customer.customerid
+GROUP BY 	invoice.customerid,invoice.customerid, customer.firstname, customer.lastname, invoice.billingcountry
+ORDER BY 	GrandTotal
+LIMIT 		50
+
+/* Query 2 */
+which are the 50 most expensive tracks, what are the prices of those units, from what album are they from, what genre are those tracks, and who are the artists of these tracks?
+
+SELECT COUNT(*), track.name AS TrackName, MAX(track.unitprice) AS UnitPrice, album.title AS AlbumTitle,  genre.name AS Genre, artist.name AS ArtistName
+FROM track
+JOIN album
+ON track.albumid = album.albumid
+JOIN artist
+ON album.artistid = artist.artistid
+JOIN genre
+ON genre.genreid = track.genreid
+GROUP BY track.unitprice, album.title, artist.name, track.name, genre.name
+ORDER BY UnitPrice DESC
+LIMIT 50
+ 
+
+/* Query 3 */
+Which employees are supporting the 50 highest spending customers, what country are those employees located and what are their e-mails? 
+
+
+SELECT  MAX(invoice.total) AS InvoiceTotal, customer.firstname AS CustomerFN, customer.lastname AS CustomerLN, employee.firstname AS EmployeeFN, employee.lastname AS EmployeeLN, employee.country AS Employee, employee.email AS EmployeeEmailCountry
+FROM employee
+JOIN customer
+ON employee.employeeid = customer.supportrepid
+JOIN invoice
+ON invoice.customerid = customer.customerid
+GROUP BY invoice.total, customer.firstname, customer.lastname, employee.firstname, employee.lastname, employee.email, employee.country,  customer.country
+ORDER BY InvoiceTotal DESC
+LIMIT 50
+
+
+/* Query 4 */
+Within 40 of the least grossing orders, how much was spent and where are these orders from by country? 
+
+SELECT MIN(invoiceline.unitprice) AS TotalAmountPerOrder, invoice.billingcountry
+FROM invoiceline
+JOIN invoice
+ON invoiceline.invoiceid = invoice.invoiceid
+GROUP BY invoice.billingcountry, invoiceline.unitprice
+ORDER BY TotalAmountPerOrder 
+LIMIT 40
